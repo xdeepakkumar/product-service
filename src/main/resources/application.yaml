@@ -7,8 +7,21 @@ spring:
     url: jdbc:postgresql://${DB_HOST:localhost}:5432/product_service_db
     username: postgres
 
+  application:
+    name: PRODUCT-SERVICE
+
   jpa:
     hibernate:
       ddl-auto: update
 
+
+eureka:
+  instance:
+    prefer-ip-address: true
+
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      defaultZone: ${EUREKA_SERVER_ADDRESS:http://localhost:8761/eureka}
 
