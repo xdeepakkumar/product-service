@@ -30,10 +30,23 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductResponse getProductById (Long productId) {
         log.info("get product by id : {}", productId);
-        Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new ProductServiceCustomException("Product with given id does not exist.", "PRODUCT_NOT_FOUND"));
+        Product product = productRepository.findById(productId).orElseThrow(
+                () -> new ProductServiceCustomException("Product with given id does not exist.", "PRODUCT_NOT_FOUND"));
         ProductResponse productResponse = new ProductResponse();
         BeanUtils.copyProperties(product, productResponse);
         return productResponse;
+    }
+
+    @Override
+    public void reduceQuantity (Long productId, Long quantity) {
+        log.info("Reduce quantity : {} for id: {}", quantity, productId);
+        Product product = productRepository.findById(productId).orElseThrow(
+                () -> new ProductServiceCustomException("Product with given id does not exist.", "PRODUCT_NOT_FOUND"));
+        if(product.getQuantity() < quantity){
+            throw new ProductServiceCustomException("Product does not have sufficient quantity", "INSUFFICIENT_QUANTITY");
+        }
+        product.setQuantity(product.getQuantity() - quantity);
+        productRepository.save(product);
+        log.info("Product quantity updated successfully");
     }
 }
